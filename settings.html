@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tranquil. - settings.</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header-section">
+        <div class="header-content">
+            <h1 class="page-title">⚙️ Settings</h1>
+        </div>
+    </header>
+    
+    <nav class="navbar">
+        <ul class="nav-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="library.html">Library</a></li>
+            <li><a href="playlists.html">Playlists</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </nav>
+    <div class="box intro-section">
+        <p style="color: black;">
+        <p style="color: black;">Welcome to the Settings! Here you can customize your "Tranquility", change your preferences, and manage your account settings.</p>
+    </div>
+
+    <!-- AUTHENTICATION SECTION -->
+    <div style="padding: 20px; background: #1a1a1a; border-radius: 10px; margin: 20px;">
+        <h2 style="color: #1db954;">👤 Account</h2>
+        <div id="userDisplay" style="color: white; margin-bottom: 15px; font-size: 16px;">Not logged in</div>
+        
+        <div id="authSection">
+            <h3 style="color: #1db954;">Login / Signup</h3>
+            <input type="email" id="authEmail" placeholder="Email" style="width: 100%; padding: 10px; margin: 8px 0; border-radius: 5px; border: none;">
+            <input type="password" id="authPassword" placeholder="Password" style="width: 100%; padding: 10px; margin: 8px 0; border-radius: 5px; border: none;">
+            <input type="text" id="authUsername" placeholder="Username (for signup)" style="width: 100%; padding: 10px; margin: 8px 0; border-radius: 5px; border: none;">
+            
+            <button id="loginBtn" style="padding: 10px 20px; background: #1db954; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px; margin-top: 10px;">Login</button>
+            <button id="signupBtn" style="padding: 10px 20px; background: #1dd1a1; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">Signup</button>
+        </div>
+    </div>
+
+    <!-- THEME SECTION -->
+    <div style="padding: 20px; background: #1a1a1a; border-radius: 10px; margin: 20px;">
+        <h2 style="color: #1db954;">🎨 Appearance</h2>
+        <p style="color: white;">Current Theme: <span id="themeDisplay" style="color: #1db954; font-weight: bold;">Dark</span></p>
+        <button id="themeToggleBtn" style="padding: 10px 20px; background: #1db954; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">Toggle Theme</button>
+    </div>
+
+    <!-- SPOTIFY SECTION -->
+    <div style="padding: 20px; background: #1a1a1a; border-radius: 10px; margin: 20px;">
+        <h2 style="color: #1db954;">🎵 Spotify Integration</h2>
+        <div id="spotifyStatus" style="color: #aaa; margin-bottom: 15px; font-size: 14px;">⚠ Connecting to Spotify...</div>
+        <div id="spotifyUserInfo" style="color: white; margin-bottom: 15px; display: none;">
+            <strong>Logged in as:</strong> <span id="spotifyUsername"></span>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button id="spotifyLoginBtn" onclick="console.log('Spotify login clicked'); app.spotifyLogin()" style="padding: 10px 20px; background: #1DB954; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Login with Spotify</button>
+            <button id="spotifyLogoutBtn" onclick="app.spotifyLogout(); location.reload();" style="padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; display: none;">Logout from Spotify</button>
+        </div>
+        <div style="margin-top: 15px; padding: 10px; background: #0a0a0a; border-radius: 5px; border-left: 3px solid #1db954;">
+            <p style="color: #aaa; font-size: 12px; margin: 0;">
+                ✓ Search 70M+ songs from Spotify<br>
+                ✓ Access your Spotify playlists<br>
+                ✓ Stream with Spotify Premium<br>
+                ✓ Get personalized recommendations<br>
+                <br>
+                <strong style="color: #1db954;">💡 Tips for Success:</strong><br>
+                • Make sure you have <strong>Spotify Premium</strong><br>
+                • Check that your redirect URI is set in Spotify Developer Dashboard:<br>
+                <code style="color: #1db954; font-size: 11px;">https://peace.figma.site/</code><br>
+                • After login, you'll be redirected back automatically<br>
+                • Check console (F12) for any error messages
+            </p>
+        </div>
+    </div>
+
+    <!-- PLAY HISTORY SECTION -->
+    <div style="padding: 20px; background: #1a1a1a; border-radius: 10px; margin: 20px; margin-bottom: 150px;">
+        <h2 style="color: #1db954;">📻 Recently Played</h2>
+        <p style="color: #aaa;">Your play history is saved locally on your device</p>
+        <div id="historyContainer"></div>
+        <button id="clearHistoryBtn" style="padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px;">Clear History</button>
+    </div>
+
+    <!-- PLAYER -->
+    <div id="playerContainer" style="position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a1a; border-top: 2px solid #1db954; padding: 15px; z-index: 1000;">
+        <div id="nowPlaying" style="color: white; text-align: center; margin-bottom: 10px; font-size: 14px;">No song playing</div>
+        
+        <div style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+            <button id="prevBtn" style="padding: 10px 15px; background: #1db954; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="app.previousSong()">⏮ Prev</button>
+            <button id="playBtn" style="padding: 10px 15px; background: #1db954; color: white; border: none; border-radius: 5px; cursor: pointer; display: none;" onclick="app.playSong()">▶ Play</button>
+            <button id="pauseBtn" style="padding: 10px 15px; background: #ff6b6b; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="app.pauseSong()">⏸ Pause</button>
+            <button id="nextBtn" style="padding: 10px 15px; background: #1db954; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="app.nextSong()">Next ⏭</button>
+            <button id="favBtn" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="app.currentSong && app.toggleFavorite(app.currentSong.id)">🤍 Favorite</button>
+        </div>
+        
+        <div style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">
+            <span id="currentTime" style="color: #aaa; font-size: 12px; min-width: 35px;">0:00</span>
+            <input type="range" id="progressBar" style="flex: 1; cursor: pointer;" value="0" min="0" max="100">
+            <span id="duration" style="color: #aaa; font-size: 12px; min-width: 35px;">0:00</span>
+            <label for="volumeControl" style="color: white; margin-left: 15px;">🔊</label>
+            <input type="range" id="volumeControl" style="width: 100px; cursor: pointer;" value="70" min="0" max="100">
+        </div>
+        
+        <audio id="audioPlayer"></audio>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            app.initializeAudioPlayer();
+            app.displayPlayHistory();
+            updateThemeDisplay();
+
+            // Authentication
+            document.getElementById('loginBtn').addEventListener('click', () => {
+                const email = document.getElementById('authEmail').value;
+                const password = document.getElementById('authPassword').value;
+                if (email && password) {
+                    const result = app.login(email, password);
+                    alert(result.message);
+                    if (result.success) {
+                        setTimeout(() => location.reload(), 500);
+                    }
+                } else {
+                    alert('Please enter email and password');
+                }
+            });
+
+            document.getElementById('signupBtn').addEventListener('click', () => {
+                const email = document.getElementById('authEmail').value;
+                const password = document.getElementById('authPassword').value;
+                const username = document.getElementById('authUsername').value;
+                if (email && password && username) {
+                    const result = app.signup(username, email, password);
+                    alert(result.message);
+                    if (result.success) {
+                        setTimeout(() => location.reload(), 500);
+                    }
+                } else {
+                    alert('Please fill in all fields');
+                }
+            });
+
+            // Theme Toggle
+            document.getElementById('themeToggleBtn').addEventListener('click', () => {
+                app.toggleTheme();
+                updateThemeDisplay();
+            });
+
+            // Clear History
+            document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+                if (confirm('Are you sure you want to clear your play history?')) {
+                    app.playHistory = [];
+                    app.saveToStorage('playHistory', app.playHistory);
+                    app.displayPlayHistory();
+                }
+            });
+
+            function updateThemeDisplay() {
+                const themeDisplay = document.getElementById('themeDisplay');
+                themeDisplay.textContent = app.theme === 'dark' ? 'Dark' : 'Light';
+            }
+
+            function updateSpotifyDisplay() {
+                const spotifyStatus = document.getElementById('spotifyStatus');
+                const spotifyUserInfo = document.getElementById('spotifyUserInfo');
+                const spotifyLoginBtn = document.getElementById('spotifyLoginBtn');
+                const spotifyLogoutBtn = document.getElementById('spotifyLogoutBtn');
+                const spotifyUsername = document.getElementById('spotifyUsername');
+
+                if (app.spotifyUser) {
+                    spotifyStatus.textContent = '✓ Connected to Spotify';
+                    spotifyStatus.style.color = '#1db954';
+                    spotifyUserInfo.style.display = 'block';
+                    spotifyUsername.textContent = app.spotifyUser.display_name || app.spotifyUser.email;
+                    spotifyLoginBtn.style.display = 'none';
+                    spotifyLogoutBtn.style.display = 'block';
+                } else if (app.spotifyAccessToken) {
+                    spotifyStatus.textContent = '⏳ Loading Spotify...';
+                    spotifyStatus.style.color = '#f39c12';
+                } else {
+                    spotifyStatus.textContent = '⚠ Not connected to Spotify';
+                    spotifyStatus.style.color = '#aaa';
+                    spotifyUserInfo.style.display = 'none';
+                    spotifyLoginBtn.style.display = 'block';
+                    spotifyLogoutBtn.style.display = 'none';
+                }
+            }
+
+            // Update Spotify display initially
+            updateSpotifyDisplay();
+
+            // Auto-update Spotify status after a delay (in case they just logged in)
+            setTimeout(updateSpotifyDisplay, 1500);
+            
+            // Listen for storage changes (in case logged in from another tab)
+            window.addEventListener('storage', () => {
+                setTimeout(updateSpotifyDisplay, 500);
+            });
+            if (app.currentUser) {
+                document.getElementById('authSection').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tranquil.</title>
+    <link rel="icon" href="imagesd/ChatGPT_Image_May_14_2026_11_16_02_AM.png" type="image/png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <img src="imagesd/ChatGPT_Image_May_14_2026_11_16_02_AM.png" alt="Tranquil logo with bold curved text over a stylized lotus flower inside a decorative circular frame" style="width: 200px; height: 200px; border-radius: 50%;">
+            </div>
+            <h1 class="splash-title" style="text-decoration: underline; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">tranquil.</h1>
+            <p class="splash-subtitle">Loading...</p>
+        </div>
+    </div>
+
+    <header class="header-section">
+        <div class="header-content">
+            <h1 class="page-title">🎵 tranquil.</h1>
+        </div>
+    </header>
+    
+    <nav class="navbar">
+        <ul class="nav-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="library.html">Library</a></li>
+            <li><a href="playlists.html">Playlists</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </nav>
+    <div class="box">
+        <h1 style="color: black; text-decoration: underline;">tranqil.</h1>
+        <p style="color: black; text-decoration: wavy;" class="glow-animation" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">Welcome to tranqil! Here you can listen to your favorite songs, create playlists, and discover new music.</p>
+    </div>
+    <br>
+    <div class="main-content-wrapper">
+        <div class="featured-artist" style="width: 300px; border: 15px solid #f0f0f0; border-radius: 15px; padding: 50px; text-align: center; background-color: #f0f0f0;">
+            <h2 style="color: black; text-decoration: underline;">Featured Artist</h2>
+            <img src="imagesd/Tyler_The_Creator_Toronto_2025.jpg" alt="Featured artist portrait with a calm presence in a clean music discovery interface" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover;">
+            <p style="color: black;">Discover the latest hits and timeless classics from our featured artist of the month.</p>
+        </div>
+        <div class="album-section">
+            <div class="album-card album-serenity" data-album="serenity" onclick="app.showAlbumModal('Serenity', 0)"><img src="imagesd/serenity.png" alt="Album cover featuring abstract artwork with soft tones" style="width: 100%; height: auto; border-radius: 10px; cursor: pointer;" onclick="event.stopPropagation(); app.showAlbumModal('Serenity', 0)"><p class="album-title">Serenity</p></div>
+            <div class="album-card album-tranquility" data-album="tranquility" onclick="app.showAlbumModal('Tranquility', 1)"><img src="imagesd/tranquilityalbum.png" alt="Album cover featuring stylized graphics and bold colors" style="width: 100%; height: auto; border-radius: 10px; cursor: pointer;" onclick="event.stopPropagation(); app.showAlbumModal('Tranquility', 1)"><p class="album-title">Tranquility</p></div>
+            <div class="album-card album-dusk" data-album="dusk" onclick="app.showAlbumModal('Dusk', 2)"><img src="imagesd/dusk.png" alt="Album cover with musical theme and vibrant design" style="width: 100%; height: auto; border-radius: 10px; cursor: pointer;" onclick="event.stopPropagation(); app.showAlbumModal('Dusk', 2)"><p class="album-title">Dusk</p></div>
+            <div class="album-card album-dawn" data-album="dawn" onclick="app.showAlbumModal('Dawn', 3)"><img src="imagesd/dawn.png" alt="Album cover with modern art elements and textured details" style="width: 100%; height: auto; border-radius: 10px; cursor: pointer;" onclick="event.stopPropagation(); app.showAlbumModal('Dawn', 3)"><p class="album-title">Dawn</p></div>
+            <div class="album-card album-reflection" data-album="reflection" onclick="app.showAlbumModal('Reflection', 4)"><img src="imagesd/reflection.png" alt="Album cover with layered visuals suggesting sound and rhythm" style="width: 100%; height: auto; border-radius: 10px; cursor: pointer;" onclick="event.stopPropagation(); app.showAlbumModal('Reflection', 4)"><p class="album-title">Reflection</p></div>
+            <div class="album-card album-midnight" data-album="midnight" onclick="app.showAlbumModal('Midnight', 5)"><img src="imagesd/midnight.png" alt="Album cover with colourful abstract shapes and dynamic composition" style="width: 100%; height: auto; border-radius: 10px; cursor: pointer;" onclick="event.stopPropagation(); app.showAlbumModal('Midnight', 5)"><p class="album-title">Midnight</p></div>
+        </div>
+    </div>
+    
+    <!-- PULL-DOWN MUSIC PLAYER SECTION -->
+    <div id="expandedPlayer" class="expanded-player" style="display: none;">
+        <div class="expanded-player-content">
+            <div class="expanded-player-header">
+                <button onclick="app.toggleExpandedPlayer()" style="background: none; border: none; color: #1db954; font-size: 24px; cursor: pointer; padding: 10px;">⌄</button>
+                <span style="flex: 1; text-align: center; color: #aaa; font-size: 14px;">Now Playing</span>
+                <button onclick="app.toggleFavorite(app.currentSong ? app.currentSong.id : null)" style="background: none; border: none; color: #e74c3c; font-size: 24px; cursor: pointer; padding: 10px;">🤍</button>
+            </div>
+            
+            <div class="expanded-player-album">
+                <img id="expandedAlbumArt" src="" alt="Album Art" style="width: 100%; max-width: 300px; border-radius: 15px; margin: 20px auto; display: block; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+            </div>
+            
+            <div class="expanded-player-info">
+                <h2 id="expandedSongTitle" style="color: white; text-align: center; margin: 20px 0 5px 0; font-size: 24px;">Select a song</h2>
+                <p id="expandedSongArtist" style="color: #aaa; text-align: center; margin: 0 0 20px 0; font-size: 16px;">Artist</p>
+                <p id="expandedAlbumName" style="color: #1db954; text-align: center; margin: 0 0 20px 0; font-size: 14px;">Album</p>
+            </div>
+            
+            <div class="expanded-player-album-songs">
+                <h3 style="color: #1db954; margin: 20px 0 15px 0;">Album Songs</h3>
+                <div id="expandedSongsList" style="max-height: 400px; overflow-y: auto;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AUDIO PLAYER -->
+    <div id="playerContainer" style="position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a1a; border-top: 2px solid #1db954; padding: 15px; z-index: 1000;">
+        <div id="nowPlaying" style="color: white; text-align: center; margin-bottom: 10px; font-size: 14px; cursor: pointer;" onclick="app.toggleExpandedPlayer()">No song playing</div>
+        
+        <div style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+            <button id="prevBtn" style="padding: 10px 15px; background: #1db954; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="app.previousSong()">⏮ Prev</button>
+            <button id="playBtn" style="padding: 10px 15px; background: #1db954; color: white; border: none; border-radius: 5px; cursor: pointer; display: none;" onclick="app.playSong()">▶ Play</button>
+            <button id="pauseBtn" style="padding: 10px 15px; background: #ff6b6b; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="app.pauseSong()">⏸ Pause</button>
+            <button id="nextBtn" style="padding: 10px 15px; background: #1db954; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="app.nextSong()">Next ⏭</button>
+            <button id="favBtn" style="padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="app.toggleFavorite(app.currentSong.id)">🤍 Favorite</button>
+        </div>
+        
+        <div style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">
+            <span id="currentTime" style="color: #aaa; font-size: 12px; min-width: 35px;">0:00</span>
+            <input type="range" id="progressBar" style="flex: 1; cursor: pointer;" value="0" min="0" max="100">
+            <span id="duration" style="color: #aaa; font-size: 12px; min-width: 35px;">0:00</span>
+            <label for="volumeControl" style="color: white; margin-left: 15px;">🔊</label>
+            <input type="range" id="volumeControl" style="width: 100px; cursor: pointer;" value="70" min="0" max="100">
+        </div>
+        
+        <audio id="audioPlayer"></audio>
+    </div>
+
+    <div id="albumModal" class="album-modal" style="display: none;">
+        <div class="album-modal-content">
+            <span class="close-btn" onclick="app.closeAlbumModal()">&times;</span>
+            <div id="modalAlbumArt" style="width: 100%; max-width: 300px; border-radius: 15px; margin: 20px auto; display: block; box-shadow: 0 10px 40px rgba(0,0,0,0.5);"></div>
+            <h2 id="modalAlbumTitle" style="color: white; text-align: center; margin: 20px 0 5px 0; font-size: 24px;"></h2>
+            <p id="modalAlbumArtist" style="color: #aaa; text-align: center; margin: 0 0 20px 0; font-size: 16px;"></p>
+            <div id="modalSongsList" style="max-height: 400px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <!-- RECOMMENDATIONS SECTION -->
+    <div style="margin-bottom: 100px; padding: 20px; background: #1a1a1a; border-radius: 10px; margin-top: 20px;">
+        <h2 style="color: #1db954; text-decoration: underline;">Recommended For You</h2>
+        <p style="color: #aaa;">Based on your listening history</p>
+        <div id="recommendationsContainer"></div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const splashScreen = document.getElementById('splashScreen');
+                splashScreen.classList.add('fade-out');
+                setTimeout(function() {
+                    splashScreen.style.display = 'none';
+                    app.initializeAudioPlayer();
+                    app.displayRecommendations();
+                }, 500);
+            }, 2500);
+        });
+    </script>
+</body>
+</html>
