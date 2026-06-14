@@ -77,7 +77,7 @@ class MusicApp {
                 'user-read-playback-state',
                 'user-modify-playback-state',
                 'playlist-read-private',
-                'playlist-read-collaborative'
+                'playlist-read-collaborative' 
             ];
             
             const params = new URLSearchParams({
@@ -223,10 +223,22 @@ class MusicApp {
         return fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=20`, {
             headers: { 'Authorization': `Bearer ${this.spotifyAccessToken}` }
         })
-        .then(res => res.json())
-        .then(data => data.tracks.items || [])
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`API error: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then(data => {
+            if (data && data.tracks && data.tracks.items) {
+                return data.tracks.items;
+            }
+            console.warn('Unexpected API response format:', data);
+            return [];
+        })
         .catch(err => {
             console.error('Spotify search error:', err);
+            alert('Error searching Spotify. Please try again.');
             return [];
         });
     }
