@@ -13,7 +13,7 @@ class MusicApp {
         
         // Spotify Integration
         this.spotifyClientId = '5f51c9f427df42969a2d500c614f82a4';
-        this.spotifyRedirectUri = 'https://peace.figma.site/spotify-redirect.html';  // Use the redirect page
+        this.spotifyRedirectUri = 'https://fusompgs.github.io/Tranquil/spotify-redirect.html';  // Use the redirect page
         this.spotifyAccessToken = this.loadFromStorage('spotifyAccessToken');
         this.spotifyRefreshToken = this.loadFromStorage('spotifyRefreshToken');
         this.spotifyUser = this.loadFromStorage('spotifyUser');
