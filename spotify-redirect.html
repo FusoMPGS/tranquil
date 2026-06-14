@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Authorization - tranquil.</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #121212;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            max-width: 400px;
+        }
+        h1 { color: #1db954; margin: 0 0 20px 0; }
+        p { color: #aaa; margin: 10px 0; }
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #333;
+            border-top-color: #1db954;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px 0;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        code {
+            background: #0a0a0a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 tranquil.</h1>
+        <p>Authenticating with Spotify...</p>
+        <div class="spinner"></div>
+        <p id="status">Processing authorization...</p>
+    </div>
+
+    <script>
+        // Get the authorization code or error from URL params
+        const params = new URLSearchParams(window.location.search);
+        const authCode = params.get('code');
+        const error = params.get('error');
+        const statusEl = document.getElementById('status');
+
+        // Constants
+        const SPOTIFY_CLIENT_ID = '5f51c9f427df42969a2d500c614f82a4';
+        const REDIRECT_URI = 'https://fusompgs.github.io/Tranquil/';
+
+        if (error) {
+            statusEl.textContent = `❌ Error: ${error}`;
+            statusEl.style.color = '#e74c3c';
+            console.error('Spotify auth error:', error);
+            setTimeout(() => {
+                if (window.opener) {
+                    window.close();
+                } else {
+                    window.location.href = 'settings.html';
+                }
+            }, 3000);
+        } else if (authCode) {
+            statusEl.textContent = '✓ Exchanging code for token...';
+            statusEl.style.color = '#1db954';
+            console.log('Authorization code received:', authCode);
+            
+            // Get the code verifier from sessionStorage
+            const codeVerifier = sessionStorage.getItem('spotify_code_verifier');
+            console.log('Code verifier exists:', !!codeVerifier);
+            
+            if (!codeVerifier) {
+                statusEl.textContent = '⚠ Session expired. Please try again.';
+                statusEl.style.color = '#f39c12';
+                console.error('No code verifier in session');
+                setTimeout(() => {
+                    if (window.opener) {
+                        window.close();
+                    } else {
+                        window.location.href = 'settings.html';
+                    }
+                }, 2000);
+                throw new Error('No code verifier');
+            }
+            
+            // Exchange code for token using PKCE
+            const tokenParams = new URLSearchParams({
+                client_id: SPOTIFY_CLIENT_ID,
+                grant_type: 'authorization_code',
+                code: authCode,
+                redirect_uri: REDIRECT_URI,
+                code_verifier: codeVerifier
+            });
+
+            fetch('https://accounts.spotify.com/api/token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: tokenParams.toString()
+            })
+            .then(res => {
+                console.log('Token response status:', res.status);
+                return res.json();
+            })
+            .then(data => {
+                console.log('Token response:', data);
+                
+                if (data.error) {
+                    throw new Error(`${data.error}: ${data.error_description}`);
+                }
+                
+                if (!data.access_token) {
+                    throw new Error('No access token in response');
+                }
+                
+                statusEl.textContent = '✓ Authorization successful!';
+                statusEl.style.color = '#1db954';
+                console.log('Access token received');
+                
+                // Store tokens
+                localStorage.setItem('tranquil_spotifyAccessToken', JSON.stringify(data.access_token));
+                if (data.refresh_token) {
+                    localStorage.setItem('tranquil_spotifyRefreshToken', JSON.stringify(data.refresh_token));
+                }
+                
+                // Clear code verifier
+                sessionStorage.removeItem('spotify_code_verifier');
+                
+                // Notify parent window or redirect
+                if (window.opener) {
+                    // If opened as popup, notify parent
+                    window.opener.app.spotifyAccessToken = data.access_token;
+                    window.opener.app.saveToStorage('spotifyAccessToken', data.access_token);
+                    if (data.refresh_token) {
+                        window.opener.app.spotifyRefreshToken = data.refresh_token;
+                        window.opener.app.saveToStorage('spotifyRefreshToken', data.refresh_token);
+                    }
+                    window.opener.app.fetchSpotifyUser();
+                    window.opener.app.initSpotifyPlayback();
+                    window.close();
+                } else {
+                    // Otherwise redirect to settings page
+                    setTimeout(() => {
+                        window.location.href = 'settings.html';
+                    }, 1500);
+                }
+            })
+            .catch(err => {
+                statusEl.textContent = `❌ ${err.message}`;
+                statusEl.style.color = '#e74c3c';
+                console.error('Token exchange error:', err);
+                setTimeout(() => {
+                    if (window.opener) {
+                        window.close();
+                    } else {
+                        window.location.href = 'settings.html?error=' + encodeURIComponent(err.message);
+                    }
+                }, 3000);
+            });
+        } else {
+            statusEl.textContent = '⚠ No authorization code received';
+            statusEl.style.color = '#f39c12';
+            console.warn('No code or error in params');
+            setTimeout(() => {
+                if (window.opener) {
+                    window.close();
+                } else {
+                    window.location.href = 'settings.html';
+                }
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
+
