@@ -225,20 +225,32 @@ class MusicApp {
         })
         .then(res => {
             if (!res.ok) {
+                if (res.status === 401) {
+                    this.spotifyAccessToken = null;
+                    this.saveToStorage('spotifyAccessToken', null);
+                    throw new Error('Spotify token expired. Please login again.');
+                }
                 throw new Error(`API error: ${res.status}`);
             }
             return res.json();
         })
         .then(data => {
-            if (data && data.tracks && data.tracks.items) {
+            // Handle Spotify API error response
+            if (data && data.error) {
+                throw new Error(`Spotify API error: ${data.error.message || data.error}`);
+            }
+            
+            // Safely extract tracks
+            if (data && data.tracks && Array.isArray(data.tracks.items)) {
                 return data.tracks.items;
             }
+            
             console.warn('Unexpected API response format:', data);
             return [];
         })
         .catch(err => {
             console.error('Spotify search error:', err);
-            alert('Error searching Spotify. Please try again.');
+            alert(`Error searching Spotify: ${err.message || 'Please try again.'}`);
             return [];
         });
     }
