@@ -220,28 +220,43 @@ class MusicApp {
             return Promise.reject('Not authenticated');
         }
 
-        return fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=20`, {
+        // Validate and trim query
+        const trimmedQuery = query ? query.trim() : '';
+        if (!trimmedQuery || trimmedQuery.length === 0) {
+            alert('Please enter a search term');
+            return Promise.resolve([]);
+        }
+
+        const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(trimmedQuery)}&type=track&limit=20`;
+        console.log('Searching Spotify:', trimmedQuery);
+
+        return fetch(searchUrl, {
             headers: { 'Authorization': `Bearer ${this.spotifyAccessToken}` }
         })
         .then(res => {
             if (!res.ok) {
-                if (res.status === 401) {
-                    this.spotifyAccessToken = null;
-                    this.saveToStorage('spotifyAccessToken', null);
-                    throw new Error('Spotify token expired. Please login again.');
+                if (res.status === 400) {
+                    throw new Error('Bad request to Spotify API. Check your search term.');
+                } else if (res.status === 401) {
+                    console.warn('Spotify token may be expired');
+                    throw new Error('Spotify token expired. Please re-login in Settings.');
+                } else if (res.status === 429) {
+                    throw new Error('Rate limited by Spotify. Please try again later.');
                 }
-                throw new Error(`API error: ${res.status}`);
+                throw new Error(`API error: ${res.status} ${res.statusText}`);
             }
             return res.json();
         })
         .then(data => {
             // Handle Spotify API error response
             if (data && data.error) {
+                console.error('Spotify API error:', data.error);
                 throw new Error(`Spotify API error: ${data.error.message || data.error}`);
             }
             
             // Safely extract tracks
             if (data && data.tracks && Array.isArray(data.tracks.items)) {
+                console.log(`Found ${data.tracks.items.length} tracks`);
                 return data.tracks.items;
             }
             
@@ -1064,6 +1079,21 @@ class MusicApp {
         if (searchInput) searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.performSearch();
         });
+
+        // Spotify search button
+        const spotifySearchBtn = document.getElementById('spotifySearchBtn');
+        if (spotifySearchBtn) {
+            spotifySearchBtn.addEventListener('click', () => {
+                const query = document.getElementById('searchInput').value;
+                if (!query || query.trim() === '') {
+                    alert('Please enter a search term');
+                    return;
+                }
+                this.searchSpotify(query).then(tracks => {
+                    this.displaySpotifySearchResults(tracks);
+                });
+            });
+        }
 
         // Close modal when clicking outside of it
         const modal = document.getElementById('albumModal');
